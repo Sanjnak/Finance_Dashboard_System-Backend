@@ -5,33 +5,63 @@ const transactionSchema = new mongoose.Schema(
   {
     amount: {
       type: Number,
-      required: true,
+      required: [true, "Amount is required"],
+      min: [0.01, "Amount must be greater than 0"],
     },
+
     type: {
       type: String,
-      required: true,
+      required: [true, "Type is required"],
       enum: {
         values: ["income", "expense"],
-        message: `{VALUE} is not supported!`,
+        message: "Type must be either income or expense",
       },
     },
+
     category: {
       type: String,
-      required: true,
+      required: [true, "Category is required"],
+      trim: true,
+      enum: {
+        values: [
+          // income categories
+          "salary",
+          "freelance",
+          "investment",
+          "business",
+          "other_income",
+          // expense categories
+          "rent",
+          "food",
+          "transport",
+          "utilities",
+          "healthcare",
+          "education",
+          "entertainment",
+          "other_expense",
+        ],
+        message: "Invalid category",
+      },
     },
+
     date: {
       type: Date,
-      required: true,
+      required: [true, "Date is required"],
+      default: Date.now,   
     },
-    description: {
+
+    notes: {
       type: String,
-      required: true,
+      trim: true,
+      maxlength: [300, "Notes cannot exceed 300 characters"],
+      default: "",
     },
+
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: user,
-        required: true,
-    }
+      type: mongoose.Schema.Types.ObjectId,   
+      ref: "User",                            
+      required: [true, "Created by is required"],
+    },
   },
 
   { timestamps: true },
