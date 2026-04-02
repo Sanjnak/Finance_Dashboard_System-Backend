@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const {validationSignup} = require("../utils/validation");
+const { validationSignup } = require("../utils/validation");
 
 const User = require("../models/user");
 
@@ -37,12 +37,15 @@ const login = async (req, res) => {
 
     const token = await validUser.getJWT();
     res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // set true in production (HTTPS only)
+      sameSite: "strict",
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
+
     return res.status(200).json({
       success: true,
       message: "Login successful.",
-      token,
       user: {
         id: validUser._id,
         name: validUser.name,
@@ -60,7 +63,7 @@ const signup = async (req, res) => {
   try {
     validationSignup(req.body); // validation
 
-    const {email, password} = req.body;
+    const { email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -79,13 +82,15 @@ const signup = async (req, res) => {
     const token = await user.getJWT(); // or jwt.sign()
 
     res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // set true in production (HTTPS only)
+      sameSite: "strict",
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
     return res.status(201).json({
       success: true,
       message: "User signed up successfully.",
-      token,
       user: {
         id: user._id,
         name: user.name,
@@ -95,7 +100,7 @@ const signup = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Signup error:", error);
+    console.error("Signup error:", err);
     return res.status(500).json({
       success: false,
       message: "Server error. Please try again.",
@@ -103,11 +108,16 @@ const signup = async (req, res) => {
   }
 };
 
-const logout = async(req, res) => {
-  res.cookie("token", null,  {
-    expires: new Date(Date.now()),
+const logout = async (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0)  
   });
-  res.send("Logout Successfully!!");
+
+  return res.status(200).json({
+    success: true,
+    message: "Logged out successfully."
+  });
 };
 
-module.exports = {login, signup, logout};
+module.exports = { login, signup, logout };

@@ -59,7 +59,7 @@ const transactionSchema = new mongoose.Schema(
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,   
-      ref: "User",                            
+      ref: user,                            
       required: [true, "Created by is required"],
     },
   },

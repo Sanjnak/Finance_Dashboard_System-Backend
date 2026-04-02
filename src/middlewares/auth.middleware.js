@@ -3,17 +3,8 @@ const User = require("../models/user");
 
 const authUser = async (req, res, next) => {
   try {
-    let token;
-
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    }
-
+    token = req.cookies.token;
     if (!token) {
-      //no token found -> request blocked
       return res.status(401).json({
         success: false,
         message: "Access denied. No token provided. Please login first.",
@@ -21,7 +12,7 @@ const authUser = async (req, res, next) => {
     }
     const decodedMessage = jwt.verify(token, process.env.JWT_SECRET);
     
-    const user = await User.findById(decodedMessage._id).select("-password");
+    const user = await User.findById(decodedMessage._id);
     if (!user) {
       return res.status(401).json({
         success: false,
