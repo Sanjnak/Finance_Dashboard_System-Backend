@@ -5,6 +5,7 @@ const cors = require("cors");
 const authRouter = require("./routes/auth.routes");
 const userRouter = require("./routes/user.routes");
 const transactionRouter = require("./routes/transaction.route");
+const dashboardRouter = require("./routes/dashboard.route");
 
 require("dotenv").config();
 const app = express();
@@ -21,6 +22,7 @@ app.use(cors(
 app.use("/", authRouter);
 app.use("/users", userRouter);
 app.use("/transactions", transactionRouter);
+app.use("/dashboard", dashboardRouter);
 
 
 connectDB()
