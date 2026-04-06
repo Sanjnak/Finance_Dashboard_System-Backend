@@ -63,7 +63,7 @@ const signup = async (req, res) => {
   try {
     validationSignup(req.body); // validation
 
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -75,7 +75,7 @@ const signup = async (req, res) => {
 
     const hash = await bcrypt.hash(password, 5); //hashing
 
-    const user = new User(req.body);
+    const user = new User({ name, email, password });
     user.password = hash;
     await user.save();
 

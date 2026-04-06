@@ -16,7 +16,6 @@ const validationSignup = (data) => {
   if (!validator.isStrongPassword(password)) {
     throw Error("Password is weak!");
   }
-
 };
 
 const validationTransaction = (data) => {
@@ -24,7 +23,7 @@ const validationTransaction = (data) => {
   if (!amount) {
     throw Error("Amount is invalid!");
   }
-  if(amount <= 0) {
+  if (amount <= 0) {
     throw Error("Amount is invalid");
   }
 
@@ -33,7 +32,21 @@ const validationTransaction = (data) => {
     throw Error("Type is invalid!");
   }
 
-  const categories = ["salary", "freelance", "investment", "business", "other_income", "rent", "food", "transport", "utilities", "healthcare", "education", "entertainment", "other_expense"];
+  const categories = [
+    "salary",
+    "freelance",
+    "investment",
+    "business",
+    "other_income",
+    "rent",
+    "food",
+    "transport",
+    "utilities",
+    "healthcare",
+    "education",
+    "entertainment",
+    "other_expense",
+  ];
   if (!categories.includes(category)) {
     throw Error("Category is invalid!");
   }
@@ -44,15 +57,22 @@ const validationTransaction = (data) => {
 };
 
 const validEditTransaction = (data) => {
-  
-  const allowedTransactionUpdate = ["amount", "type", "category", "notes", "date"];
-  const isAllowedTransactionUpdate = Object.keys(data).every((element) => allowedTransactionUpdate.includes(element));
-  if(!isAllowedTransactionUpdate) {
+  const allowedTransactionUpdate = [
+    "amount",
+    "type",
+    "category",
+    "notes",
+    "date",
+  ];
+  const isAllowedTransactionUpdate = Object.keys(data).every((element) =>
+    allowedTransactionUpdate.includes(element),
+  );
+  if (!isAllowedTransactionUpdate) {
     throw Error("No updatable fields!!");
   }
 
   const { amount, type, category } = data;
-  if(amount <= 0) {
+  if (amount !== undefined && amount <= 0) {
     throw Error("Amount is invalid");
   }
 
@@ -61,12 +81,28 @@ const validEditTransaction = (data) => {
     throw Error("Type is invalid!");
   }
 
-  const categories = ["salary", "freelance", "investment", "business", "other_income", "rent", "food", "transport", "utilities", "healthcare", "education", "entertainment", "other_expense"];
+  const categories = [
+    "salary",
+    "freelance",
+    "investment",
+    "business",
+    "other_income",
+    "rent",
+    "food",
+    "transport",
+    "utilities",
+    "healthcare",
+    "education",
+    "entertainment",
+    "other_expense",
+  ];
   if (category && !categories.includes(category)) {
     throw Error("Category is invalid!");
   }
+};
 
-}
-
-
-module.exports = {validationSignup, validationTransaction, validEditTransaction}
+module.exports = {
+  validationSignup,
+  validationTransaction,
+  validEditTransaction,
+};
